@@ -1,32 +1,33 @@
-import { Navigate, Route, Routes, useLocation } from "react-router";
-
-import { Navbar } from "../ui";
-
-import { MarvelPage, DCpage, HeroPage } from "../heroes";
-import { LoginPage, SearchPage } from "../auth";
+import { Route, Routes } from "react-router";
+import { LoginPage } from "../auth";
+import { HeroesRoutes } from "./HeroesRoutes";
+import { PrivateRoute } from "./PrivateRoute";
+import { PublicRoute } from "./PublicRoute";
 
 export const AppRouter = () => {
-  // Localizamos la ubicacion de loging para poder esconder el navbar cuando se muestre
-  const location = useLocation();
-  const isLoginPage = location.pathname === "/login";
-
   return (
     <>
-      {!isLoginPage && <Navbar />}
+      <Routes>
+        <Route
+          path="login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
 
-      <div className="container">
-        <Routes>
-          <Route path="marvel" element={<MarvelPage />} />
-          <Route path="dc" element={<DCpage />} />
-          <Route path="search" element={<SearchPage />} />
-          <Route path="hero/:id" element={<HeroPage />} />
-
-          <Route path="login" element={<LoginPage />} />
-
-          {/* Para una ruta COMODIN */}
-          <Route path="/" element={<Navigate to="/marvel" />} />
-        </Routes>
-      </div>
+        <Route
+          path="/*"
+          element={
+            <PrivateRoute>
+              <HeroesRoutes />
+            </PrivateRoute>
+          }
+        />
+        {/* <Route path="login" element={LoginPage}></Route> */}
+        {/* <Route path="/*" element={<HeroesRoutes></HeroesRoutes>} /> */}
+      </Routes>
     </>
   );
 };
